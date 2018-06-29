@@ -1,0 +1,100 @@
+==============
+Linux commands
+==============
+* To change permission of all the directories to 755 (drwxr-xr-x):
+$ find . -type d -exec chmod 755 {} \;
+
+* To change permission all the files to 644 (-rw-r--r--):
+$ find . -type f -exec chmod 644 {} \;
+
+* Find and move files
+find . -name "*.c" -print0 | xargs -0 -I {} mv {} /destdir/
+
+==============
+Misc.
+==============
+
+* Copy the output of a command directly to clipboard
+For example, using xclip to copy path to clipboard,
+alias cpwd='echo -n $PWD | xclip'
+
+I am using this to copy working directory path to clipboard,
+useful for scp.
+
+* Create destination directory if it does not exist while copying
+Simply add following in your .bashrc, works in Ubuntu.
+
+mkcp() {
+    test -d $2 || mkdir -p $2
+    cp -r $1 $2
+}
+
+E.g If you want to copy 'test' file to destination directory 'd' Use,
+
+mkcp test a/b/c/d
+
+mkcp will first check if destination directory exist or not, if not then make it
+and copy source file/directory.
+
+* Rename file/directory at same location
+mv /home/sudousr/test/{a,b}
+will rename file from a to b at the same location
+
+* To check which shell you are using,
+ps -p $$
+($$ will give PID of shell)
+
+* Makefile warning: modification time nnn s in the future
+find . -type f -exec touch {} +
+
+==============
+VI editor
+==============
+* View file in hex using vim
+I find it useful to switch to hex mode,
+
+So, open a file in vi as usual(even binary file).
+Now to switch into hex mode hit escape and type:
+:%!xxd
+
+And when your done and want to exit from hex mode hit escape again and type:
+:%!xxd -r
+
+Okay, so this isn’t actually switching to vi’s ‘hex mode’, vi dosen’t have
+one. What the above actually does is to stream vi’s buffer through the external
+program ‘xxd’.
+
+* Remove space/tab at end of line in file
+:%s/\s\+$//
+Explanation:
+
+: command
+% apply to entire file
+s search and replace
+/\s\+$/ regex for one or more whitespace characters followed by the end of a line
+// replacement value of an empty string
+
+# Append string at end of line
+:%s/$/\*/g
+
+==============
+Linux Kernel
+==============
+* To cause kernel panic
+sysctl kernel.panic=1
+(or manually echo '1' in /proc/sys/kernel/panic )
+echo c > /proc/sysrq-trigger
+[more info https://www.kernel.org/doc/Documentation/sysrq.txt]
+
+* Creating defconfig file from .config
+$ make savedefconfig
+$ cp defconfig arch/arm/configs/my_defconfig
+
+==============
+git
+==============
+How to undo the last commit?
+$ git reset --soft HEAD~                                    (1)
+<< edit files as necessary >>                               (2)
+$ git add .                                                 (3)
+$ git commit -c ORIG_HEAD                                   (4)
