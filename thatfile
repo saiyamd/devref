@@ -10,6 +10,9 @@ $ find . -type f -exec chmod 644 {} \;
 * Find and move files
 find . -name "*.c" -print0 | xargs -0 -I {} mv {} /destdir/
 
+* Fina and copy files keeping directory structure.
+find . -name '*.csv' -exec cp --parents \{\} /destdir \;
+
 ==============
 Misc.
 ==============
